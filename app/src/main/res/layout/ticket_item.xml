@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="200dp"
     android:layout_margin="10dp"
     app:cardCornerRadius="10dp"
     app:cardElevation="6dp"
@@ -11,6 +11,14 @@
     android:focusable="true"
     app:cardBackgroundColor="@android:color/white"
     android:foreground="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/main_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/moscow"
+        android:scaleType="centerCrop"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +39,8 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:text="Цена"
-                android:textColor="#156ABE"
+                android:textColor="#2191FF"
+                style="@style/TextWithShadow"
                 android:layout_margin="10dp"/>
 
             <TextView
@@ -41,6 +50,8 @@
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:text="Откуда куда"
+                style="@style/TextWithShadow"
+                android:textColor="@color/white"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="10dp"/>
 
@@ -51,7 +62,8 @@
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:text="Дата время"
-                android:textColor="#ABABAB"
+                style="@style/TextWithShadow"
+                android:textColor="#E7E7E7"
                 android:layout_marginStart="10dp" />
 
 
@@ -69,8 +81,9 @@
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:text="Компания"
+                    style="@style/TextWithShadow"
                     android:layout_gravity="end"
-                    android:textColor="#7C7C7C"
+                    android:textColor="#E2E2E2"
                     />
                 
                 

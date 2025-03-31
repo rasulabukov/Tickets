@@ -15,6 +15,7 @@ class TicketsAdapter(
 ) : RecyclerView.Adapter<TicketsAdapter.TicketViewHolder>() {
 
     class TicketViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val mainImage: ImageView = itemView.findViewById(R.id.main_image) // Добавлено
         val priceTextView: TextView = itemView.findViewById(R.id.priceTextView)
         val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
         val datetimeTextView: TextView = itemView.findViewById(R.id.datetimeTextView)
@@ -31,6 +32,7 @@ class TicketsAdapter(
 
     override fun onBindViewHolder(holder: TicketViewHolder, position: Int) {
         val ticket = tickets[position]
+        holder.mainImage.setImageResource(ticket.destinationImageResId) // Устанавливаем фон
         holder.priceTextView.text = ticket.price
         holder.nameTextView.text = "${ticket.departure} → ${ticket.destination}"
         holder.datetimeTextView.text = "${ticket.date} • ${ticket.time}"

@@ -15,4 +15,7 @@ interface TicketDao {
 
     @Query("SELECT * FROM tickets WHERE departure = :departure AND destination = :destination")
     suspend fun getFilteredTickets(departure: String, destination: String): List<Ticket>
+
+    @Query("SELECT * FROM tickets WHERE departure = :departure AND destination = :destination AND airline = :airline")
+    suspend fun getFilteredTicketsByAirline(departure: String, destination: String, airline: String): List<Ticket>
 }

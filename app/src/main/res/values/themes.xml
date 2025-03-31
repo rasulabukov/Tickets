@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.Tickets" parent="Base.Theme.Tickets" />
+
+    <style name="TextWithShadow">
+        <item name="android:shadowColor">#80000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">3</item>
+    </style>
 </resources>

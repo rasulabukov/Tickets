@@ -12,5 +12,6 @@ data class Ticket(
     val date: String,
     val time: String,
     val airline: String,
-    val airlineImageResId: Int
+    val airlineImageResId: Int,
+    val destinationImageResId: Int
 )

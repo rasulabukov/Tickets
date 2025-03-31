@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: TicketsAdapter
     private lateinit var departureSpinner: Spinner
     private lateinit var destinationSpinner: Spinner
+    private lateinit var airlineSpinner: Spinner
     private lateinit var filterButton: Button
     private lateinit var appDatabase: AppDatabase
     private lateinit var sharedPrefs: SharedPrefs
@@ -35,37 +36,38 @@ class MainActivity : AppCompatActivity() {
 
         checkAuthorization()
 
-        // Инициализация UI элементов
         departureSpinner = findViewById(R.id.departureSpinner)
         destinationSpinner = findViewById(R.id.destinationSpinner)
+        airlineSpinner = findViewById(R.id.airlineSpinner)
         filterButton = findViewById(R.id.filterButton)
         recyclerView = findViewById(R.id.ticketsRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Список доступных городов
         val cities = listOf("Москва", "Санкт-Петербург", "Сочи", "Казань", "Екатеринбург")
+        val airlines = listOf("Аэрофлот", "S7 Airlines", "Победа", "Уральские авиалинии")
 
-        // Создаем отдельные списки с подсказками для каждого спиннера
         val departureList = listOf("Откуда") + cities
         val destinationList = listOf("Куда") + cities
+        val airlineList = listOf("Выбор компании") + airlines
 
-        // Создаем отдельные адаптеры
         val departureAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, departureList)
         departureAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         val destinationAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, destinationList)
         destinationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        // Назначаем разные адаптеры
+        val airlineAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, airlineList)
+        airlineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         departureSpinner.adapter = departureAdapter
         destinationSpinner.adapter = destinationAdapter
+        airlineSpinner.adapter = airlineAdapter
 
-        // Устанавливаем начальные значения (подсказки)
         departureSpinner.setSelection(0, false)
         destinationSpinner.setSelection(0, false)
+        airlineSpinner.setSelection(0, false)
 
         filterButton.setOnClickListener {
-            // Проверяем, что выбраны реальные города, а не подсказки
             if (departureSpinner.selectedItemPosition == 0 ||
                 destinationSpinner.selectedItemPosition == 0) {
                 Toast.makeText(this, "Выберите города отправления и назначения",
@@ -73,12 +75,21 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Получаем выбранные города (пропускаем первый элемент - подсказку)
             val departure = departureSpinner.selectedItem.toString()
             val destination = destinationSpinner.selectedItem.toString()
+            val airline = if (airlineSpinner.selectedItemPosition == 0) {
+                null
+            } else {
+                airlineSpinner.selectedItem.toString()
+            }
 
             lifecycleScope.launch {
-                val tickets = appDatabase.ticketDao().getFilteredTickets(departure, destination)
+                val tickets = if (airline == null) {
+                    appDatabase.ticketDao().getFilteredTickets(departure, destination)
+                } else {
+                    appDatabase.ticketDao().getFilteredTicketsByAirline(departure, destination, airline)
+                }
+
                 withContext(Dispatchers.Main) {
                     adapter = TicketsAdapter(tickets) { ticket ->
                         showPurchaseBottomSheet(ticket)
@@ -196,7 +207,8 @@ class MainActivity : AppCompatActivity() {
                     date = "15.05.2023",
                     time = "10:30",
                     airline = "Аэрофлот",
-                    airlineImageResId = R.drawable.aeroflot
+                    airlineImageResId = R.drawable.aeroflot,
+                    destinationImageResId = R.drawable.sp
                 ),
                 Ticket(
                     departure = "Москва",
@@ -205,7 +217,8 @@ class MainActivity : AppCompatActivity() {
                     date = "16.05.2023",
                     time = "14:45",
                     airline = "S7 Airlines",
-                    airlineImageResId = R.drawable.s7
+                    airlineImageResId = R.drawable.s7,
+                    destinationImageResId = R.drawable.sochi
                 ),
                 Ticket(
                     departure = "Санкт-Петербург",
@@ -214,7 +227,8 @@ class MainActivity : AppCompatActivity() {
                     date = "17.05.2023",
                     time = "18:20",
                     airline = "Победа",
-                    airlineImageResId = R.drawable.pobeda
+                    airlineImageResId = R.drawable.pobeda,
+                    destinationImageResId = R.drawable.moscow
                 ),
                 Ticket(
                     departure = "Казань",
@@ -223,7 +237,8 @@ class MainActivity : AppCompatActivity() {
                     date = "18.05.2023",
                     time = "09:15",
                     airline = "Аэрофлот",
-                    airlineImageResId = R.drawable.aeroflot
+                    airlineImageResId = R.drawable.aeroflot,
+                    destinationImageResId = R.drawable.moscow
                 ),
                 Ticket(
                     departure = "Екатеринбург",
@@ -232,7 +247,8 @@ class MainActivity : AppCompatActivity() {
                     date = "19.05.2023",
                     time = "12:00",
                     airline = "Уральские авиалинии",
-                    airlineImageResId = R.drawable.ural
+                    airlineImageResId = R.drawable.ural,
+                    destinationImageResId = R.drawable.moscow
                 )
             )
             tickets.forEach { appDatabase.ticketDao().insert(it) }
